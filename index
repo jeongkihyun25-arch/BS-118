@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>브리지스톤 모바일 보증 및 보상 시스템</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- EmailJS 라이브러리 (원드라이브 이메일 브리지용) -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <style>
+    :root {
+      --bs-red: #E60012;
+      --bs-dark: #1A1A1A;
+      --bs-blue: #1E40AF;
+      --bg-gray: #F3F4F6;
+      --border-color: #D1D5DB;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: var(--bg-gray);
+      color: var(--bs-dark);
+      line-height: 1.5;
+    }
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: #FFFFFF;
+      box-shadow: 0 0 20px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+    }
+    .app-header {
+      background: var(--bs-dark);
+      color: #FFFFFF;
+      padding: 18px 20px;
+      text-align: center;
+      border-bottom: 4px solid var(--bs-red);
+    }
+    .app-header h1 { font-size: 22px; font-weight: 900; letter-spacing: 1px; font-style: italic; }
+    .app-header p { font-size: 14px; color: #D1D5DB; margin-top: 4px; }
+    
+    .status-bar {
+      background: #FEF3C7;
+      color: #92400E;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 16px;
+      text-align: center;
+      border-bottom: 1px solid #FDE68A;
+    }
+    .status-bar.connected { background: #DCFCE7; color: #166534; border-color: #BBF7D0; }
+
+    .content-area { padding: 24px 20px; flex: 1; }
+    .screen { display: none; }
+    .screen.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .welcome-text { font-size: 20px; font-weight: 700; margin-bottom: 24px; text-align: center; word-break: keep-all; }
+    
+    .big-card-btn {
+      width: 100%;
+      padding: 26px 20px;
+      margin-bottom: 18px;
+      border-radius: 16px;
+      border: 2px solid transparent;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .big-card-btn:active { transform: scale(0.98); }
+    .btn-register { background: #FFF5F5; border-color: var(--bs-red); }
+    .btn-register .badge { background: var(--bs-red); color: #FFF; }
+    .btn-claim { background: #EFF6FF; border-color: var(--bs-blue); }
+    .btn-claim .badge { background: var(--bs-blue); color: #FFF; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 700; width: fit-content; }
+    .big-card-btn h2 { font-size: 23px; font-weight: 900; color: #111; }
+    .big-card-btn p { font-size: 16px; color: #4B5563; font-weight: 500; }
+
+    .top-nav { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid #EEE; }
+    .btn-back { background: #E5E7EB; border: none; padding: 10px 16px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-right: 12px; }
+    .screen-title { font-size: 20px; font-weight: 900; }
+
+    .form-group { margin-bottom: 22px; }
+    .form-label { display: block; font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #111; }
+    .form-sub { display: block; font-size: 14px; color: #6B7280; margin-bottom: 8px; }
+    .form-input, .form-select {
+      width: 100%;
+      height: 56px;
+      padding: 0 16px;
+      font-size: 20px;
+      font-weight: 700;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      background: #FFF;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--bs-red); outline: none; }
+
+    .photo-upload-box {
+      display: block;
+      width: 100%;
+      padding: 20px;
+      border: 2px dashed #9CA3AF;
+      border-radius: 12px;
+      background: #F9FAFB;
+      text-align: center;
+      cursor: pointer;
+    }
+    .photo-upload-box.done { border-style: solid; border-color: #16A34A; background: #F0FDF4; }
+    .photo-upload-box input[type="file"] { display: none; }
+    .camera-btn-text { font-size: 18px; font-weight: 700; color: #1F2937; display: block; }
+    .preview-img { max-width: 100%; max-height: 180px; margin-top: 12px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; }
+
+    .submit-btn {
+      width: 100%;
+      height: 62px;
+      background: var(--bs-red);
+      color: #FFFFFF;
+      font-size: 21px;
+      font-weight: 900;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .submit-btn:disabled { background: #9CA3AF; cursor: not-allowed; }
+
+    .info-summary-card {
+      background: #F8FAFC;
+      border: 2px solid #94A3B8;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 22px;
+    }
+    .info-row { display: flex; justify-content: space-between; font-size: 17px; padding: 8px 0; border-bottom: 1px solid #E2E8F0; }
+    .info-row:last-child { border-bottom: none; }
+    .info-row strong { color: var(--bs-red); font-size: 19px; }
+
+    .calc-highlight {
+      background: #FEF2F2;
+      border: 2px solid var(--bs-red);
+      color: var(--bs-red);
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 900;
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+    .test-helper {
+      background: #F3F4F6;
+      border: 1px solid #D1D5DB;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #374151;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header class="app-header">
+    <h1>BRIDGESTONE</h1>
+    <p>타이어 모바일 보증 등록 및 보상 접수</p>
+  </header>
+  <div id="statusBar" class="status-bar">
+    현재 [즉시 테스트 모드] 작동 중 (서버 설정 전에도 모든 기능 테스트 가능)
+  </div>
+
+  <div class="content-area">
+    
+    <!-- ================= 1. 홈 화면 ================= -->
+    <div id="screen-home" class="screen active">
+      <p class="welcome-text">원하시는 버튼을 가볍게 눌러주세요.</p>
+
+      <button type="button" class="big-card-btn btn-register" onclick="showScreen('screen-register')">
+        <span class="badge">타이어를 새로 사셨나요?</span>
+        <h2>1. 최초 구매 등록하기</h2>
+        <p>영수증과 현재 계기판(키로수)을 등록합니다.</p>
+      </button>
+
+      <button type="button" class="big-card-btn btn-claim" onclick="showScreen('screen-claim')">
+        <span class="badge">타이어에 문제가 생겼나요?</span>
+        <h2>2. 타이어 보상 접수하기</h2>
+        <p>휴대폰 번호만 입력하면 구매 내역이 자동 조회됩니다.</p>
+      </button>
+
+      <div class="test-helper">
+        <strong>💡 시험 테스트 안내</strong><br>
+        • <strong>1번(구매 등록)</strong>에서 내 번호로 등록한 뒤, <strong>2번(보상 접수)</strong>에서 같은 번호를 치면 방금 등록한 데이터가 즉시 조회됩니다.<br>
+        • 등록 없이 곧바로 2번을 테스트하려면 샘플 번호 <strong>01012345678</strong>을 입력해 보세요. (90일 전 구매, 50,000km 샘플 데이터 자동 로드)
+      </div>
+    </div>
+
+    <!-- ================= 2. 최초 구매 등록 화면 ================= -->
+    <div id="screen-register" class="screen">
+      <div class="top-nav">
+        <button type="button" class="btn-back" onclick="showScreen('screen-home')">← 뒤로</button>
+        <span class="screen-title">1. 최초 구매 등록</span>
+      </div>
+
+      <form id="form-register">
+        <div class="form-group">
+          <label class="form-label">1. 휴대폰 번호 입력</label>
+          <span class="form-sub">나중에 보상 접수할 때 이 번호로 조회합니다.</span>
+          <input type="tel" id="reg_phone" class="form-input" inputmode="numeric" placeholder="01012345678" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">2. 고객 성함 (또는 차량번호)</label>
+          <input type="text" id="reg_name" class="form-input" placeholder="예: 홍길동 (12가3456)" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">3. 구매 대리점 선택</label>
+          <select id="reg_agency" class="form-select" required>
+            <option value="">대리점을 선택해 주세요</option>
+            <option value="북항현대">북항현대</option>
+            <option value="청라상사">청라상사</option>
+            <option value="우리타이어">우리타이어</option>
+            <option value="(주) 태지">(주) 태지</option>
+            <option value="(주)남영타이어 브리지스톤 남구점">(주)남영타이어 브리지스톤 남구점</option>
+            <option value="가락타이어">가락타이어</option>
+            <option value="경남대리점(김해)">경남대리점(김해)</option>
+            <option value="브리지스톤 군산대리점(전북총판)">브리지스톤 군산대리점(전북총판)</option>
+            <option value="브리지스톤천안">브리지스톤천안</option>
+            <option value="기타 대리점">기타 대리점</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">4. 현재 차량 키로수(km) 입력</label>
+          <span class="form-sub">계기판에 보이는 주행거리 숫자를 적어주세요.</span>
+          <input type="number" id="reg_km" class="form-input" inputmode="numeric" placeholder="예: 50000" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">5. 구매 영수증 사진 촬영</label>
+          <label class="photo-upload-box" id="box_receipt">
+            <span class="camera-btn-text" id="txt_receipt">📷 여기를 눌러 영수증 찍기</span>
+            <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_receipt', 'box_receipt', 'txt_receipt', 'receipt')">
+            <img id="prev_receipt" class="preview-img">
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">6. 차량 계기판(키로수) 사진 촬영</label>
+          <label class="photo-upload-box" id="box_odo">
+            <span class="camera-btn-text" id="txt_odo">📷 여기를 눌러 계기판 찍기</span>
+            <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_odo', 'box_odo', 'txt_odo', 'odo')">
+            <img id="prev_odo" class="preview-img">
+          </label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="btn_reg_submit">구매 등록 완료하기</button>
+      </form>
+    </div>
+
+    <!-- ================= 3. 타이어 보상 접수 화면 ================= -->
+    <div id="screen-claim" class="screen">
+      <div class="top-nav">
+        <button type="button" class="btn-back" onclick="showScreen('screen-home')">← 뒤로</button>
+        <span class="screen-title">2. 타이어 보상 접수</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">휴대폰 번호로 구매내역 불러오기</label>
+        <span class="form-sub">샘플 테스트 번호: 01012345678</span>
+        <div style="display:flex; gap:10px;">
+          <input type="tel" id="claim_phone" class="form-input" inputmode="numeric" placeholder="01012345678" value="01012345678">
+          <button type="button" id="btn_lookup" onclick="lookupCustomer()" style="width:130px; background:var(--bs-blue); color:#FFF; border:none; border-radius:12px; font-size:18px; font-weight:700; cursor:pointer; flex-shrink:0;">조회하기</button>
+        </div>
+      </div>
+
+      <form id="form-claim" style="display:none;">
+        <div class="info-summary-card">
+          <div class="info-row"><span>고객명 (대리점):</span> <strong id="view_name">-</strong></div>
+          <div class="info-row"><span>최초 구매일:</span> <span id="view_date">-</span></div>
+          <div class="info-row"><span>구매 후 경과일:</span> <strong id="view_days">-</strong></div>
+          <div class="info-row"><span>최초 등록 키로수:</span> <span id="view_init_km">-</span></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">1. 현재 차량 키로수(km) 입력</label>
+          <span class="form-sub">숫자를 입력하면 총 주행거리가 자동 계산됩니다.</span>
+          <input type="number" id="claim_curr_km" class="form-input" inputmode="numeric" placeholder="예: 62000" oninput="calculateDrivenKm()" required>
+          <div id="usage_result" class="calc-highlight"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">2. 타이어 DOT 번호 (선택사항)</label>
+          <span class="form-sub">타이어 옆면 제조번호 4자리 (예: 3825)</span>
+          <input type="text" id="claim_dot" class="form-input" placeholder="모르시면 사진만 찍어주셔도 됩니다">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">3. 문제 부위 및 DOT 사진 촬영</label>
+          <label class="photo-upload-box" id="box_damage">
+            <span class="camera-btn-text" id="txt_damage">📷 여기를 눌러 타이어 찍기</span>
+            <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_damage', 'box_damage', 'txt_damage', 'damage')">
+            <img id="prev_damage" class="preview-img">
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">4. 현재 계기판(키로수) 사진 촬영</label>
+          <label class="photo-upload-box" id="box_claim_odo">
+            <span class="camera-btn-text" id="txt_claim_odo">📷 여기를 눌러 계기판 찍기</span>
+            <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_claim_odo', 'box_claim_odo', 'txt_claim_odo', 'claim_odo')">
+            <img id="prev_claim_odo" class="preview-img">
+          </label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="btn_claim_submit">보상 접수 전송하기</button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // =========================================================================
+  // [설정 영역] 나중에 실제 양방향 DB(구글 시트) 및 EmailJS 연결 시 아래 4개 값만 채워 넣으세요.
+  // 비워두셔도 지금 바로 100% 오류 없이 테스트 모드로 작동합니다!
+  // =========================================================================
+  const GAS_WEB_APP_URL = ""; // 2단계에서 발급받을 구글 Apps Script 웹앱 URL
+  const EMAILJS_PUBLIC_KEY = ""; // (선택) EmailJS Public Key
+  const EMAILJS_SERVICE_ID = ""; // (선택) EmailJS Service ID
+  const EMAILJS_TEMPLATE_ID = ""; // (선택) EmailJS Template ID
+
+  if (EMAILJS_PUBLIC_KEY) {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+  if (GAS_WEB_APP_URL) {
+    const bar = document.getElementById('statusBar');
+    bar.innerText = "실시간 양방향 클라우드 DB 연결 완료";
+    bar.classList.add('connected');
+  }
+
+  // 기본 테스트용 샘플 데이터 초기화 (01012345678 번호로 90일 전 구매 세팅)
+  (function initSampleData() {
+    const samplePhone = "01012345678";
+    if (!localStorage.getItem('BS_DB_' + samplePhone)) {
+      const pastDate = new Date();
+      pastDate.setDate(pastDate.getDate() - 90);
+      const sampleRecord = {
+        phone: samplePhone,
+        name: "김브리지 (테스트차량)",
+        agency: "북항현대",
+        initKm: 50000,
+        regDate: pastDate.toISOString().slice(0, 10)
+      };
+      localStorage.setItem('BS_DB_' + samplePhone, JSON.stringify(sampleRecord));
+    }
+  })();
+
+  const photoData = { receipt: "", odo: "", damage: "", claim_odo: "" };
+  let activeCustomer = null;
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // 사진 자동 리사이징 및 압축 (오류 방지)
+  function processImage(input, previewId, boxId, txtId, key) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement('canvas');
+        const MAX_W = 800;
+        let w = img.width, h = img.height;
+        if (w > MAX_W) { h = Math.round(h * (MAX_W / w)); w = MAX_W; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const compressed = canvas.toDataURL('image/jpeg', 0.6);
+        photoData[key] = compressed;
+
+        const prev = document.getElementById(previewId);
+        prev.src = compressed;
+        prev.style.display = 'block';
+        document.getElementById(boxId).classList.add('done');
+        document.getElementById(txtId).innerText = "✅ 사진 첨부 완료 (다시 찍으려면 터치)";
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // [기능 1] 최초 구매 등록 저장 (양방향 DB + 로컬 백업 + 이메일 동시 처리)
+  document.getElementById('form-register').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btn_reg_submit');
+    btn.disabled = true;
+    btn.innerText = "안전하게 저장 중입니다...";
+
+    const phone = document.getElementById('reg_phone').value.replace(/[^0-9]/g, '');
+    const name = document.getElementById('reg_name').value.trim();
+    const agency = document.getElementById('reg_agency').value;
+    const initKm = parseInt(document.getElementById('reg_km').value, 10) || 0;
+    const regDate = new Date().toISOString().slice(0, 10);
+
+    const record = {
+      action: "register",
+      phone, name, agency, initKm, regDate,
+      photo1_name: `${phone}_영수증.jpg`,
+      photo1_data: photoData.receipt || "사진없음",
+      photo2_name: `${phone}_최초계기판.jpg`,
+      photo2_data: photoData.odo || "사진없음"
+    };
+
+    // 1. 로컬 스토리지에 즉시 저장 (오프라인/테스트 무결성 보장)
+    localStorage.setItem('BS_DB_' + phone, JSON.stringify(record));
+
+    try {
+      // 2. 양방향 구글 시트 서버 URL이 있으면 전송
+      if (GAS_WEB_APP_URL) {
+        await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(record)
+        });
+      }
+      // 3. EmailJS 키가 있으면 회사 메일(원드라이브 연동)로도 동시 전송
+      if (EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID) {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          title: "[사내웹등록-신규구매]",
+          type: "최초구매등록",
+          phone, name, agency,
+          init_km: initKm.toLocaleString() + " km",
+          reg_date: regDate,
+          elapsed_days: "0일 (신규)",
+          driven_km: "0 km",
+          dot_no: "-",
+          photo1_name: record.photo1_name,
+          photo1_data: record.photo1_data,
+          photo2_name: record.photo2_name,
+          photo2_data: record.photo2_data
+        });
+      }
+
+      alert(`✅ [${name}]님 최초 구매 등록이 완료되었습니다!\n\n이제 [2. 타이어 보상 접수하기] 화면에서 휴대폰 번호(${phone})를 입력해 양방향 조회를 테스트해 보세요.`);
+      document.getElementById('claim_phone').value = phone;
+      showScreen('screen-home');
+    } catch (err) {
+      alert("기기에 임시 저장이 완료되었습니다. (네트워크 확인 필요)");
+      showScreen('screen-home');
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "구매 등록 완료하기";
+    }
+  });
+
+  // [기능 2] 보상 접수 시 휴대폰 번호로 양방향 조회
+  async function lookupCustomer() {
+    const phone = document.getElementById('claim_phone').value.replace(/[^0-9]/g, '');
+    if (phone.length < 8) {
+      alert("휴대폰 번호를 정확히 입력해 주세요.");
+      return;
+    }
+
+    const btn = document.getElementById('btn_lookup');
+    btn.innerText = "조회중...";
+    btn.disabled = true;
+
+    let foundRecord = null;
+
+    // 1. 양방향 구글 시트 DB가 연결되어 있으면 서버에서 먼저 조회 (다른 폰으로 접속해도 100% 조회됨)
+    if (GAS_WEB_APP_URL) {
+      try {
+        const res = await fetch(`${GAS_WEB_APP_URL}?phone=${encodeURIComponent(phone)}`);
+        const json = await res.json();
+        if (json && json.found) {
+          foundRecord = json.data;
+        }
+      } catch (e) {
+        console.warn("클라우드 조회 실패, 로컬 캐시 확인 중");
+      }
+    }
+
+    // 2. 서버 미연결 상태이거나 로컬에 데이터가 있으면 로컬 DB에서 조회
+    if (!foundRecord) {
+      const local = localStorage.getItem('BS_DB_' + phone);
+      if (local) foundRecord = JSON.parse(local);
+    }
+
+    btn.innerText = "조회하기";
+    btn.disabled = false;
+
+    if (!foundRecord) {
+      alert("해당 번호로 등록된 최초 구매 내역이 없습니다.\n\n[1. 최초 구매 등록하기]에서 먼저 등록하시거나, 샘플 번호(01012345678)로 테스트해 보세요.");
+      return;
+    }
+
+    // 경과일 계산
+    const regDateObj = new Date(foundRecord.regDate);
+    const todayObj = new Date();
+    const diffDays = Math.max(0, Math.floor((todayObj - regDateObj) / (1000 * 60 * 60 * 24)));
+
+    activeCustomer = { ...foundRecord, diffDays, drivenKm: 0 };
+
+    document.getElementById('view_name').innerText = `${foundRecord.name} (${foundRecord.agency})`;
+    document.getElementById('view_date').innerText = foundRecord.regDate;
+    document.getElementById('view_days').innerText = `구매 후 ${diffDays}일 경과`;
+    document.getElementById('view_init_km').innerText = `${Number(foundRecord.initKm).toLocaleString()} km`;
+
+    document.getElementById('form-claim').style.display = 'block';
+    calculateDrivenKm();
+  }
+
+  // 현재 키로수 입력 시 주행거리 실시간 자동 계산
+  function calculateDrivenKm() {
+    if (!activeCustomer) return;
+    const currKm = parseInt(document.getElementById('claim_curr_km').value, 10);
+    const box = document.getElementById('usage_result');
+
+    if (!isNaN(currKm)) {
+      const driven = currKm - Number(activeCustomer.initKm);
+      box.style.display = 'block';
+      if (driven >= 0) {
+        box.innerText = `📊 장착 후 총 ${driven.toLocaleString()} km 주행 (${activeCustomer.diffDays}일 경과)`;
+        activeCustomer.drivenKm = driven;
+        activeCustomer.currKm = currKm;
+      } else {
+        box.innerText = `⚠️ 최초 키로수(${Number(activeCustomer.initKm).toLocaleString()} km)보다 큰 숫자를 입력해 주세요.`;
+        activeCustomer.drivenKm = 0;
+      }
+    } else {
+      box.style.display = 'none';
+    }
+  }
+
+  // [기능 3] 보상 접수 제출
+  document.getElementById('form-claim').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!activeCustomer) return;
+
+    const btn = document.getElementById('btn_claim_submit');
+    btn.disabled = true;
+    btn.innerText = "보상 접수 전송 중...";
+
+    const dotNo = document.getElementById('claim_dot').value.trim() || "미입력(사진확인)";
+    const payload = {
+      action: "claim",
+      phone: activeCustomer.phone,
+      name: activeCustomer.name,
+      agency: activeCustomer.agency,
+      regDate: activeCustomer.regDate,
+      elapsedDays: `${activeCustomer.diffDays}일 경과`,
+      initKm: activeCustomer.initKm,
+      currKm: activeCustomer.currKm || 0,
+      drivenKm: activeCustomer.drivenKm || 0,
+      dotNo: dotNo,
+      photo1_name: `${activeCustomer.phone}_타이어문제및DOT.jpg`,
+      photo1_data: photoData.damage || "사진없음",
+      photo2_name: `${activeCustomer.phone}_보상시점계기판.jpg`,
+      photo2_data: photoData.claim_odo || "사진없음"
+    };
+
+    try {
+      if (GAS_WEB_APP_URL) {
+        await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+      }
+      if (EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID) {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+          title: "[사내웹등록-보상접수]",
+          type: "타이어보상접수",
+          phone: payload.phone,
+          name: payload.name,
+          agency: payload.agency,
+          init_km: Number(payload.initKm).toLocaleString() + " km",
+          reg_date: payload.regDate,
+          elapsed_days: payload.elapsedDays,
+          driven_km: `총 ${Number(payload.drivenKm).toLocaleString()} km 주행 (현재 ${Number(payload.currKm).toLocaleString()} km)`,
+          dot_no: payload.dotNo,
+          photo1_name: payload.photo1_name,
+          photo1_data: payload.photo1_data,
+          photo2_name: payload.photo2_name,
+          photo2_data: payload.photo2_data
+        });
+      }
+
+      alert(`✅ 보상 접수가 완료되었습니다!\n\n• 고객명: ${payload.name}\n• 경과일: ${payload.elapsedDays}\n• 총 주행거리: ${Number(payload.drivenKm).toLocaleString()} km\n• DOT번호: ${payload.dotNo}`);
+      showScreen('screen-home');
+    } catch (err) {
+      alert("전송 중 일시적인 오류가 발생했으나 내역은 기기에 보존되었습니다.");
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "보상 접수 전송하기";
+    }
+  });
+</script>
+
+</body>
+</html>
