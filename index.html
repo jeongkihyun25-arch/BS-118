@@ -5,96 +5,137 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>브리지스톤 트럭/버스 타이어 품질보증 서비스</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <!-- EmailJS 라이브러리 로드 -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function() {
+      emailjs.init("YOUR_PUBLIC_KEY"); // 발급받은 EmailJS Public Key 입력
+    })();
+  </script>
   <style>
     :root {
       --bs-red: #E60012;
-      --bs-dark: #1A1A1A;
-      --bs-blue: #1E40AF;
-      --bg-gray: #F3F4F6;
-      --border-color: #D1D5DB;
+      --bs-dark: #111111;
+      --bs-card-bg: #1E1E1E;
+      --bg-gray: #0D0D0D;
+      --text-light: #F9FAFB;
+      --text-gray: #9CA3AF;
+      --border-color: #374151;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; word-break: keep-all; overflow-wrap: break-word; }
-    body { font-family: 'Noto Sans KR', sans-serif; background-color: var(--bg-gray); color: var(--bs-dark); line-height: 1.45; }
-    .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background: #FFFFFF; box-shadow: 0 0 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
-    .app-header { background: var(--bs-dark); color: #FFFFFF; padding: 16px; text-align: center; border-bottom: 4px solid var(--bs-red); }
-    .app-header h1 { font-size: 21px; font-weight: 900; letter-spacing: 1px; font-style: italic; }
-    .app-header p { font-size: 13px; color: #D1D5DB; margin-top: 4px; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: var(--bg-gray);
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: #141414;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    }
+    .app-header {
+      background: var(--bs-dark);
+      color: #FFFFFF;
+      padding: 18px 20px;
+      text-align: center;
+      border-bottom: 3px solid var(--bs-red);
+    }
+    .app-header h1 { font-size: 22px; font-weight: 900; letter-spacing: 1px; font-style: italic; color: #FFF; }
+    .app-header p { font-size: 13px; color: var(--text-gray); margin-top: 4px; }
     
     .policy-banner {
-      background: #FFFBEB;
-      border-bottom: 2px solid #FCD34D;
-      padding: 12px 16px;
+      background: #1F1A12;
+      border-bottom: 1px solid #D97706;
+      padding: 14px 18px;
       font-size: 13px;
-      color: #92400E;
-      line-height: 1.4;
+      color: #FBBF24;
+      line-height: 1.45;
     }
-    .policy-banner strong { color: var(--bs-red); }
+    .policy-banner strong { color: #F87171; }
 
-    .content-area { padding: 20px 16px 32px; flex: 1; }
+    .content-area { padding: 24px 20px 40px; flex: 1; }
     .screen { display: none; }
-    .screen.active { display: block; animation: fadeIn 0.2s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .screen.active { display: block; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    .welcome-text { font-size: 18px; font-weight: 700; margin-bottom: 18px; text-align: center; }
+    .welcome-text { font-size: 19px; font-weight: 700; margin-bottom: 20px; text-align: center; color: #FFF; }
     
     .big-card-btn {
-      width: 100%; padding: 22px 18px; margin-bottom: 16px; border-radius: 16px; border: 2px solid transparent;
-      text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 6px;
+      width: 100%;
+      padding: 24px 20px;
+      margin-bottom: 18px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s ease;
+      background: var(--bs-card-bg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-    .big-card-btn:active { transform: scale(0.98); }
-    .btn-register { background: #FFF5F5; border-color: var(--bs-red); }
-    .btn-register .badge { background: var(--bs-red); color: #FFF; }
-    .btn-claim { background: #EFF6FF; border-color: var(--bs-blue); }
-    .btn-claim .badge { background: var(--bs-blue); color: #FFF; }
-    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 700; width: fit-content; }
-    .big-card-btn h2 { font-size: 21px; font-weight: 900; color: #111; }
-    .big-card-btn p { font-size: 15px; color: #4B5563; font-weight: 500; }
+    .big-card-btn:active { transform: scale(0.97); }
+    .btn-register { border-left: 5px solid var(--bs-red); }
+    .btn-register .badge { background: rgba(230,0,18,0.2); color: #FF6B6B; border: 1px solid var(--bs-red); }
+    .btn-claim { border-left: 5px solid #3B82F6; }
+    .btn-claim .badge { background: rgba(59,130,246,0.2); color: #93C5FD; border: 1px solid #3B82F6; }
+    
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12.5px; font-weight: 700; width: fit-content; }
+    .big-card-btn h2 { font-size: 21px; font-weight: 900; color: #FFF; }
+    .big-card-btn p { font-size: 14.5px; color: var(--text-gray); font-weight: 400; }
 
-    .top-nav { display: flex; align-items: center; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #EEE; }
-    .btn-back { background: #E5E7EB; border: none; padding: 10px 14px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-right: 10px; flex-shrink: 0; }
-    .screen-title { font-size: 19px; font-weight: 900; }
+    .top-nav { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .btn-back { background: #374151; color: #FFF; border: none; padding: 10px 16px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-right: 12px; flex-shrink: 0; }
+    .screen-title { font-size: 19px; font-weight: 900; color: #FFF; }
 
-    .form-group { margin-bottom: 22px; position: relative; }
-    .form-label { display: block; font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #111; }
-    .form-sub { display: block; font-size: 13.5px; color: #4B5563; margin-bottom: 8px; line-height: 1.4; }
-    .form-sub strong { color: var(--bs-red); }
+    .form-group { margin-bottom: 24px; position: relative; }
+    .form-label { display: block; font-size: 16.5px; font-weight: 700; margin-bottom: 6px; color: #F3F4F6; }
+    .form-sub { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 8px; line-height: 1.4; }
+    .form-sub strong { color: #F87171; }
+    
     .form-input {
-      width: 100%; height: 54px; padding: 0 14px; font-size: 18px; font-weight: 700;
-      border: 2px solid var(--border-color); border-radius: 12px; background: #FFF;
+      width: 100%; height: 56px; padding: 0 16px; font-size: 18px; font-weight: 700;
+      border: 2px solid var(--border-color); border-radius: 12px; background: #1F2937; color: #FFF;
     }
     .form-input:focus { border-color: var(--bs-red); outline: none; }
 
     .agency-dropdown {
       display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 220px; overflow-y: auto;
-      background: #FFFFFF; border: 2px solid var(--bs-dark); border-radius: 12px; margin-top: 4px; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      background: #1F2937; border: 2px solid #4B5563; border-radius: 12px; margin-top: 4px; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
     .agency-dropdown.show { display: block; }
-    .agency-item { padding: 14px 16px; font-size: 16px; font-weight: 700; border-bottom: 1px solid #F3F4F6; cursor: pointer; }
-    .agency-item:active { background-color: #FEF2F2; color: var(--bs-red); }
+    .agency-item { padding: 14px 16px; font-size: 16px; font-weight: 700; border-bottom: 1px solid #374151; color: #FFF; cursor: pointer; }
+    .agency-item:active { background-color: var(--bs-red); color: #FFF; }
 
     .photo-upload-box {
-      display: block; width: 100%; padding: 18px 14px; border: 2px dashed #9CA3AF; border-radius: 12px; background: #F9FAFB; text-align: center; cursor: pointer;
+      display: block; width: 100%; padding: 20px 14px; border: 2px dashed #6B7280; border-radius: 12px; background: #1F2937; text-align: center; cursor: pointer;
     }
-    .photo-upload-box.done { border-style: solid; border-color: #16A34A; background: #F0FDF4; }
+    .photo-upload-box.done { border-style: solid; border-color: #10B981; background: #064E3B; }
     .photo-upload-box input[type="file"] { display: none; }
-    .camera-btn-text { font-size: 17px; font-weight: 700; color: #1F2937; display: block; }
-    .preview-img { max-width: 100%; max-height: 160px; margin-top: 10px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; }
+    .camera-btn-text { font-size: 17px; font-weight: 700; color: #E5E7EB; display: block; }
+    .preview-img { max-width: 100%; max-height: 200px; margin-top: 12px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; border: 1px solid #FFF; }
 
     .submit-btn {
-      width: 100%; height: 60px; background: var(--bs-red); color: #FFFFFF; font-size: 20px; font-weight: 900;
-      border: none; border-radius: 14px; cursor: pointer; margin-top: 8px;
+      width: 100%; height: 62px; background: var(--bs-red); color: #FFFFFF; font-size: 21px; font-weight: 900;
+      border: none; border-radius: 14px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(230,0,18,0.4);
     }
-    .submit-btn:disabled { background: #9CA3AF; cursor: not-allowed; }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { background: #4B5563; box-shadow: none; cursor: not-allowed; }
 
-    .info-summary-card { background: #F8FAFC; border: 2px solid #94A3B8; border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; }
-    .info-row { display: flex; justify-content: space-between; align-items: center; font-size: 15.5px; padding: 7px 0; border-bottom: 1px solid #E2E8F0; gap: 8px; }
+    .info-summary-card { background: #1F2937; border: 2px solid #4B5563; border-radius: 12px; padding: 16px; margin-bottom: 22px; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; font-size: 15.5px; padding: 8px 0; border-bottom: 1px solid #374151; gap: 8px; }
     .info-row:last-child { border-bottom: none; }
-    .info-row strong { color: var(--bs-red); font-size: 17px; text-align: right; }
+    .info-row strong { color: #F87171; font-size: 17px; text-align: right; }
 
     .calc-highlight {
-      background: #FEF2F2; border: 2px solid var(--bs-red); color: var(--bs-red); padding: 12px; border-radius: 10px;
-      font-size: 16.5px; font-weight: 900; text-align: center; margin-top: 10px; display: none;
+      background: #450A0A; border: 2px solid var(--bs-red); color: #FCA5A5; padding: 14px; border-radius: 10px;
+      font-size: 17px; font-weight: 900; text-align: center; margin-top: 10px; display: none;
     }
   </style>
 </head>
@@ -106,7 +147,7 @@
     <p>R118 카고 트럭 타이어 품질보증 서비스</p>
   </header>
   <div class="policy-banner">
-    📢 <strong>품질보증 규정 안내:</strong> 구매일로부터 <strong>3개월 이내</strong>, 마모율 <strong>20% 이내(잔존깊이 13.4mm)</strong>인 타이어는 사용자 과실 파손 시 <strong>1본당 1회</strong> 새 제품 교환 보상을 지원합니다.
+    📢 <strong>품질보증 규정:</strong> 구매일로부터 <strong>3개월 이내</strong>, 마모율 20% 이내 파손 타이어는 <strong>1본 이상 구매 시 1본당 1회</strong> 새 제품 교환 보장.
   </div>
 
   <div class="content-area">
@@ -118,13 +159,13 @@
       <button type="button" class="big-card-btn btn-register" onclick="showScreen('screen-register')">
         <span class="badge">R118 신규 구매 고객</span>
         <h2>1. 최초 구매 등록하기</h2>
-        <p>영수증과 장착 시점 계기판 키로수를 등록합니다.</p>
+        <p>영수증, 장착 키로수 및 총 구매 수량을 등록합니다.</p>
       </button>
 
       <button type="button" class="big-card-btn btn-claim" onclick="showScreen('screen-claim')">
         <span class="badge">운행 중 타이어 파손 발생</span>
         <h2>2. 사용자 과실 보상 접수하기</h2>
-        <p>휴대폰 번호로 등록 내역을 조회하고 보상을 신청합니다.</p>
+        <p>휴대폰 번호로 등록 내역을 조회하고 1본 교환을 신청합니다.</p>
       </button>
     </div>
 
@@ -138,7 +179,7 @@
       <form id="form-register" autocomplete="off">
         <div class="form-group">
           <label class="form-label">1. 휴대폰 번호 입력</label>
-          <span class="form-sub">나중에 보상 접수 시 본인 확인용으로 사용됩니다.</span>
+          <span class="form-sub">보상 접수 시 본인 확인 및 보상 이력 관리용</span>
           <input type="tel" id="reg_phone" class="form-input" inputmode="numeric" placeholder="01012345678" required>
         </div>
 
@@ -155,23 +196,29 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">4. 장착 시점 차량 키로수(km)</label>
+          <label class="form-label">4. 총 구매 수량 (본 수) 직접 입력</label>
+          <span class="form-sub">구매하신 R118 타이어 총 본수를 숫자로 입력해주세요 (1본 이상).</span>
+          <input type="number" id="reg_qty" class="form-input" inputmode="numeric" min="1" placeholder="예: 4" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">5. 장착 시점 차량 키로수(km)</label>
           <input type="number" id="reg_km" class="form-input" inputmode="numeric" placeholder="예: 50000" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label">5. 구매 영수증 사진 촬영</label>
+          <label class="form-label">6. 구매 영수증 사진 촬영</label>
           <label class="photo-upload-box" id="box_receipt">
-            <span class="camera-btn-text" id="txt_receipt">📷 영수증 찍기</span>
+            <span class="camera-btn-text" id="txt_receipt">📷 영수증 찍기 (고화질 확대 가능)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_receipt', 'box_receipt', 'txt_receipt', 'receipt')">
             <img id="prev_receipt" class="preview-img">
           </label>
         </div>
 
         <div class="form-group">
-          <label class="form-label">6. 장착 시점 계기판 사진 촬영</label>
+          <label class="form-label">7. 장착 시점 계기판 사진 촬영</label>
           <label class="photo-upload-box" id="box_odo">
-            <span class="camera-btn-text" id="txt_odo">📷 계기판 찍기</span>
+            <span class="camera-btn-text" id="txt_odo">📷 계기판 찍기 (고화질 확대 가능)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_odo', 'box_odo', 'txt_odo', 'odo')">
             <img id="prev_odo" class="preview-img">
           </label>
@@ -192,16 +239,17 @@
         <label class="form-label">등록된 휴대폰 번호 조회</label>
         <div style="display:flex; gap:8px;">
           <input type="tel" id="claim_phone" class="form-input" inputmode="numeric" placeholder="01012345678" value="01012345678">
-          <button type="button" id="btn_lookup" onclick="lookupCustomer()" style="width:115px; background:var(--bs-blue); color:#FFF; border:none; border-radius:12px; font-size:17px; font-weight:700; cursor:pointer; flex-shrink:0;">조회하기</button>
+          <button type="button" id="btn_lookup" onclick="lookupCustomer()" style="width:115px; background:#3B82F6; color:#FFF; border:none; border-radius:12px; font-size:17px; font-weight:700; cursor:pointer; flex-shrink:0;">조회하기</button>
         </div>
       </div>
 
       <form id="form-claim" style="display:none;" autocomplete="off">
         <div class="info-summary-card">
           <div class="info-row"><span>고객명 (대리점)</span> <strong id="view_name">-</strong></div>
+          <div class="info-row"><span>총 구매 수량</span> <strong id="view_qty" style="color:#60A5FA;">-</strong></div>
           <div class="info-row"><span>최초 구매일</span> <span id="view_date">-</span></div>
           <div class="info-row"><span>구매 후 경과일</span> <strong id="view_days">-</strong></div>
-          <div class="info-row"><span>최초 등록 키로수</span> <span id="view_init_km">-</span></div>
+          <div class="info-row"><span>최초 장착 키로수</span> <span id="view_init_km">-</span></div>
         </div>
 
         <div class="form-group">
@@ -212,14 +260,14 @@
 
         <div class="form-group">
           <label class="form-label">2. 타이어 DOT 숫자 4자리 입력</label>
-          <span class="form-sub">타이어 옆면 DOT 맨 뒤의 <strong>숫자 4자리</strong>를 입력하세요.</span>
+          <span class="form-sub">타이어 옆면 DOT 맨 뒤의 <strong>숫자 4자리</strong> 입력</span>
           <input type="tel" id="claim_dot" class="form-input" inputmode="numeric" maxlength="4" placeholder="예: 3825" required>
         </div>
 
         <div class="form-group">
           <label class="form-label">3. 타이어 DOT 전체 사진 (알파벳 포함)</label>
           <label class="photo-upload-box" id="box_dot_photo">
-            <span class="camera-btn-text" id="txt_dot_photo">📷 DOT 전체 찍기</span>
+            <span class="camera-btn-text" id="txt_dot_photo">📷 DOT 전체 찍기 (고화질)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_dot_photo', 'box_dot_photo', 'txt_dot_photo', 'dot_photo')">
             <img id="prev_dot_photo" class="preview-img">
           </label>
@@ -227,9 +275,8 @@
 
         <div class="form-group">
           <label class="form-label">4. 타이어 문제 파손 부위 사진</label>
-          <span class="form-sub">트레드, 사이드월, 비드컷 등 파손 부위 촬영</span>
           <label class="photo-upload-box" id="box_damage">
-            <span class="camera-btn-text" id="txt_damage">📷 문제 부위 찍기</span>
+            <span class="camera-btn-text" id="txt_damage">📷 문제 부위 찍기 (고화질)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_damage', 'box_damage', 'txt_damage', 'damage')">
             <img id="prev_damage" class="preview-img">
           </label>
@@ -238,13 +285,13 @@
         <div class="form-group">
           <label class="form-label">5. 현재 계기판(키로수) 사진</label>
           <label class="photo-upload-box" id="box_claim_odo">
-            <span class="camera-btn-text" id="txt_claim_odo">📷 현재 계기판 찍기</span>
+            <span class="camera-btn-text" id="txt_claim_odo">📷 현재 계기판 찍기 (고화질)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_claim_odo', 'box_claim_odo', 'txt_claim_odo', 'claim_odo')">
             <img id="prev_claim_odo" class="preview-img">
           </label>
         </div>
 
-        <button type="submit" class="submit-btn" id="btn_claim_submit">보상 접수 전송하기</button>
+        <button type="submit" class="submit-btn" id="btn_claim_submit">보상 신청 완료하기</button>
       </form>
     </div>
 
@@ -252,7 +299,7 @@
 </div>
 
 <script>
-  const GAS_WEB_APP_URL = ""; 
+  const GAS_WEB_APP_URL = ""; // 원드라이브(구글시트) 연동 웹앱 URL
   const AGENCY_LIST = [
     "(주) 태지", "(주)남영타이어 브리지스톤 남구점", "(주)뉴트럭오일교환", "(주)도개미쉐린타이어", "(주)영재",
     "(주)온누리타이어", "(주)태성운송종합상사", "KTS동아타이어", "LS타이어", "㈜국제상사",
@@ -307,9 +354,9 @@
     const samplePhone = "01012345678";
     if (!localStorage.getItem('BS_DB_' + samplePhone)) {
       const pastDate = new Date();
-      pastDate.setDate(pastDate.getDate() - 30); // 30일 전 구매 (보상 대상 기간 내)
+      pastDate.setDate(pastDate.getDate() - 30);
       localStorage.setItem('BS_DB_' + samplePhone, JSON.stringify({
-        phone: samplePhone, name: "김브리지 (테스트)", agency: "북항현대", initKm: 50000, regDate: pastDate.toISOString().slice(0, 10)
+        phone: samplePhone, name: "김트럭 (화물차주)", agency: "북항현대", qty: 4, initKm: 50000, regDate: pastDate.toISOString().slice(0, 10), claimed: false
       }));
     }
   })();
@@ -331,54 +378,72 @@
       const img = new Image();
       img.onload = function() {
         const canvas = document.createElement('canvas');
-        const MAX_W = 800;
+        const MAX_W = 1600;
         let w = img.width, h = img.height;
         if (w > MAX_W) { h = Math.round(h * (MAX_W / w)); w = MAX_W; }
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        const compressed = canvas.toDataURL('image/jpeg', 0.6);
+        const compressed = canvas.toDataURL('image/jpeg', 0.85);
         photoData[key] = compressed;
 
         const prev = document.getElementById(previewId);
         prev.src = compressed;
         prev.style.display = 'block';
         document.getElementById(boxId).classList.add('done');
-        document.getElementById(txtId).innerText = "✅ 촬영 완료 (다시 터치)";
+        document.getElementById(txtId).innerText = "✅ 고화질 촬영 완료 (다시 터치)";
       };
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   }
 
+  // 1. 최초 구매 등록 (담당자 메일 알림 + 원드라이브/구글시트 백엔드 연동)
   document.getElementById('form-register').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('btn_reg_submit');
-    btn.disabled = true; btn.innerText = "저장 중...";
+    btn.disabled = true; btn.innerText = "저장 및 메일 전송 중...";
 
     const phone = document.getElementById('reg_phone').value.replace(/[^0-9]/g, '');
     const name = document.getElementById('reg_name').value.trim();
     const agency = document.getElementById('reg_agency').value.trim();
+    const qty = parseInt(document.getElementById('reg_qty').value, 10) || 1;
     const initKm = parseInt(document.getElementById('reg_km').value, 10) || 0;
     const regDate = new Date().toISOString().slice(0, 10);
 
-    const record = { action: "register", phone, name, agency, initKm, regDate };
+    const record = { action: "register", phone, name, agency, qty, initKm, regDate, claimed: false };
     localStorage.setItem('BS_DB_' + phone, JSON.stringify(record));
 
     try {
       if (GAS_WEB_APP_URL) {
         await fetch(GAS_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(record) });
       }
-      alert(`✅ [${name}]님 최초 구매 등록이 완료되었습니다!`);
+      // EmailJS를 통한 담당자 메일 발송
+      await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        title: "[브리지스톤 품질보증] 신규 구매 등록 알림",
+        type: "최초구매등록",
+        phone: phone,
+        name: name,
+        agency: agency,
+        qty: qty + "본",
+        init_km: initKm.toLocaleString() + " km",
+        reg_date: regDate,
+        elapsed_days: "0일 (신규)",
+        driven_km: "0 km",
+        dot_no: "-"
+      });
+
+      alert(`✅ [${name}]님 (${qty}본 구매) 최초 등록이 완료되며 담당자 메일로 전송되었습니다!`);
       document.getElementById('claim_phone').value = phone;
       showScreen('screen-home');
     } catch (err) {
-      alert("등록 완료되었습니다.");
+      alert("기기에 안전하게 저장되었습니다. (메일 발송 키 설정 확인)");
       showScreen('screen-home');
     } finally {
       btn.disabled = false; btn.innerText = "구매 등록 완료하기";
     }
   });
 
+  // 2. 보상 접수 조회
   async function lookupCustomer() {
     const phone = document.getElementById('claim_phone').value.replace(/[^0-9]/g, '');
     if (phone.length < 8) { alert("휴대폰 번호를 정확히 입력해 주세요."); return; }
@@ -391,14 +456,7 @@
       try {
         const res = await fetch(`${GAS_WEB_APP_URL}?phone=${encodeURIComponent(phone)}`);
         const json = await res.json();
-        if (json && json.found) {
-          if (json.alreadyClaimed) {
-            alert("⚠️ 안내: 해당 휴대폰 번호는 이미 품질보증(1회 교환) 서비스를 지원받은 이력이 있어 중복 접수가 불가합니다.");
-            btn.innerText = "조회하기"; btn.disabled = false;
-            return;
-          }
-          foundRecord = json.data;
-        }
+        if (json && json.found) foundRecord = json.data;
       } catch (e) {}
     }
 
@@ -414,16 +472,21 @@
       return;
     }
 
+    if (foundRecord.claimed) {
+      alert("⚠️ 안내: 해당 휴대폰 번호는 이미 1본 교환 보상 서비스를 지원받아 추가 접수가 불가합니다.");
+      return;
+    }
+
     const regDateObj = new Date(foundRecord.regDate);
     const diffDays = Math.max(0, Math.floor((new Date() - regDateObj) / (1000 * 60 * 60 * 24)));
 
-    // 규정 검증 (3개월 = 약 90일)
     if (diffDays > 90) {
       alert(`⚠️ 안내: 구매일로부터 ${diffDays}일이 경과하여 품질보증 기간(3개월)이 만료되었습니다.`);
     }
 
     activeCustomer = { ...foundRecord, diffDays, drivenKm: 0 };
     document.getElementById('view_name').innerText = `${foundRecord.name} (${foundRecord.agency})`;
+    document.getElementById('view_qty').innerText = `${foundRecord.qty || 1}본 구매 (보상 한도: 1본 1회)`;
     document.getElementById('view_date').innerText = foundRecord.regDate;
     document.getElementById('view_days').innerText = `구매 후 ${diffDays}일 경과`;
     document.getElementById('view_init_km').innerText = `${Number(foundRecord.initKm).toLocaleString()} km`;
@@ -443,21 +506,25 @@
         activeCustomer.drivenKm = driven;
         activeCustomer.currKm = currKm;
       } else {
-        box.innerText = `⚠️ 최초 키로수보다 큰 숫자를 입력하세요.`;
+        box.innerText = `⚠️ 최초 장착 키로수보다 큰 숫자를 입력하세요.`;
         activeCustomer.drivenKm = 0;
       }
     } else { box.style.display = 'none'; }
   }
 
+  // 3. 보상 접수 제출 (담당자 메일 알림 + 원드라이브/구글시트 백엔드 연동)
   document.getElementById('form-claim').addEventListener('submit', async function(e) {
     e.preventDefault();
     if (!activeCustomer) return;
 
     const btn = document.getElementById('btn_claim_submit');
-    btn.disabled = true; btn.innerText = "전송 중...";
+    btn.disabled = true; btn.innerText = "보상 신청 및 메일 전송 중...";
 
     const dotNo = document.getElementById('claim_dot').value.trim();
-    if (dotNo.length !== 4) { alert("DOT 숫자 4자리를 정확히 입력해 주세요."); btn.disabled = false; btn.innerText = "보상 접수 전송하기"; return; }
+    if (dotNo.length !== 4) { alert("DOT 숫자 4자리를 정확히 입력해 주세요."); btn.disabled = false; btn.innerText = "보상 신청 완료하기"; return; }
+
+    activeCustomer.claimed = true;
+    localStorage.setItem('BS_DB_' + activeCustomer.phone, JSON.stringify(activeCustomer));
 
     const payload = {
       action: "claim",
@@ -482,12 +549,28 @@
       if (GAS_WEB_APP_URL) {
         await fetch(GAS_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
       }
-      alert(`✅ 보상 접수가 완료되었습니다!\n\n• 경과일: ${payload.elapsedDays}\n• 주행거리: ${Number(payload.drivenKm).toLocaleString()} km\n• DOT 4자리: ${payload.dotNo}\n\n[규정 검토 후 1본 교환 승인 처리됩니다]`);
+      // 담당자에게 보상 접수 메일 발송
+      await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        title: "[브리지스톤 품질보증] 사용자 과실 보상 접수 알림",
+        type: "타이어보상접수",
+        phone: payload.phone,
+        name: payload.name,
+        agency: payload.agency,
+        qty: (activeCustomer.qty || 1) + "본 중 1본 신청",
+        init_km: Number(payload.initKm).toLocaleString() + " km",
+        reg_date: payload.regDate,
+        elapsed_days: payload.elapsedDays,
+        driven_km: `총 ${Number(payload.drivenKm).toLocaleString()} km 주행 (현재 ${Number(payload.currKm).toLocaleString()} km)`,
+        dot_no: payload.dotNo
+      });
+
+      alert(`✅ 보상 신청이 완료되어 담당자 메일로 전송되었습니다!\n\n• 경과일: ${payload.elapsedDays}\n• 주행거리: ${Number(payload.drivenKm).toLocaleString()} km\n• DOT 4자리: ${payload.dotNo}`);
       showScreen('screen-home');
     } catch (err) {
-      alert("접수 내역이 기기에 저장되었습니다.");
+      alert("보상 접수 내역이 기기에 저장되었습니다. (메일 발송 키 확인 필요)");
+      showScreen('screen-home');
     } finally {
-      btn.disabled = false; btn.innerText = "보상 접수 전송하기";
+      btn.disabled = false; btn.innerText = "보상 신청 완료하기";
     }
   });
 </script>
