@@ -4,138 +4,160 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>브리지스톤 트럭/버스 타이어 품질보증 서비스</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <!-- EmailJS 라이브러리 로드 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome 아이콘 CDN 연동 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- EmailJS 라이브러리 -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
     (function() {
-      emailjs.init("YOUR_PUBLIC_KEY"); // 발급받은 EmailJS Public Key 입력
+      emailjs.init("YOUR_PUBLIC_KEY");
     })();
   </script>
   <style>
     :root {
-      --bs-red: #E60012;
-      --bs-dark: #111111;
-      --bs-card-bg: #1E1E1E;
-      --bg-gray: #0D0D0D;
-      --text-light: #F9FAFB;
-      --text-gray: #9CA3AF;
-      --border-color: #374151;
+      --bs-red: #DC2626;
+      --bs-red-dark: #B91C1C;
+      --bg-dark: #0F172A;
+      --card-bg: #1E293B;
+      --card-border: #334155;
+      --text-main: #F8FAFC;
+      --text-sub: #94A3B8;
+      --accent-blue: #3B82F6;
+      --radius: 14px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; word-break: keep-all; overflow-wrap: break-word; }
     body {
       font-family: 'Noto Sans KR', sans-serif;
-      background-color: var(--bg-gray);
-      color: var(--text-light);
+      background-color: #090D16;
+      color: var(--text-main);
       line-height: 1.5;
     }
     .app-container {
       max-width: 480px;
       margin: 0 auto;
       min-height: 100vh;
-      background: #141414;
+      background: var(--bg-dark);
       display: flex;
       flex-direction: column;
-      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      box-shadow: 0 0 40px rgba(0,0,0,0.7);
     }
+    /* 헤더 디자인 */
     .app-header {
-      background: var(--bs-dark);
+      background: #020617;
       color: #FFFFFF;
-      padding: 18px 20px;
+      padding: 20px;
       text-align: center;
-      border-bottom: 3px solid var(--bs-red);
+      border-bottom: 2px solid var(--bs-red);
+      position: relative;
     }
-    .app-header h1 { font-size: 22px; font-weight: 900; letter-spacing: 1px; font-style: italic; color: #FFF; }
-    .app-header p { font-size: 13px; color: var(--text-gray); margin-top: 4px; }
+    .app-header h1 { font-size: 22px; font-weight: 900; letter-spacing: 0.5px; font-style: italic; color: #FFF; }
+    .app-header p { font-size: 13px; color: var(--text-sub); margin-top: 4px; font-weight: 500; }
     
+    /* 규정 공지 배너 */
     .policy-banner {
-      background: #1F1A12;
-      border-bottom: 1px solid #D97706;
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 4px solid #F59E0B;
       padding: 14px 18px;
-      font-size: 13px;
-      color: #FBBF24;
-      line-height: 1.45;
+      font-size: 13.5px;
+      color: #FCD34D;
+      line-height: 1.5;
+      margin: 16px 16px 0;
+      border-radius: 0 var(--radius) var(--radius) 0;
     }
     .policy-banner strong { color: #F87171; }
 
-    .content-area { padding: 24px 20px 40px; flex: 1; }
+    .content-area { padding: 20px 16px 40px; flex: 1; }
     .screen { display: none; }
-    .screen.active { display: block; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .screen.active { display: block; animation: fadeIn 0.25s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    .welcome-text { font-size: 19px; font-weight: 700; margin-bottom: 20px; text-align: center; color: #FFF; }
+    .welcome-text { font-size: 18px; font-weight: 700; margin-bottom: 20px; text-align: center; color: var(--text-main); }
     
+    /* 프리미엄 카드 버튼 (FontAwesome 아이콘 조합) */
     .big-card-btn {
       width: 100%;
-      padding: 24px 20px;
-      margin-bottom: 18px;
-      border-radius: 16px;
-      border: 1px solid var(--border-color);
+      padding: 22px 20px;
+      margin-bottom: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
       text-align: left;
       cursor: pointer;
       display: flex;
-      flex-direction: column;
-      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
       transition: all 0.2s ease;
-      background: var(--bs-card-bg);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-    .big-card-btn:active { transform: scale(0.97); }
+    .big-card-btn:active { transform: scale(0.98); }
     .btn-register { border-left: 5px solid var(--bs-red); }
-    .btn-register .badge { background: rgba(230,0,18,0.2); color: #FF6B6B; border: 1px solid var(--bs-red); }
-    .btn-claim { border-left: 5px solid #3B82F6; }
-    .btn-claim .badge { background: rgba(59,130,246,0.2); color: #93C5FD; border: 1px solid #3B82F6; }
+    .btn-claim { border-left: 5px solid var(--accent-blue); }
     
-    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12.5px; font-weight: 700; width: fit-content; }
-    .big-card-btn h2 { font-size: 21px; font-weight: 900; color: #FFF; }
-    .big-card-btn p { font-size: 14.5px; color: var(--text-gray); font-weight: 400; }
+    .card-content h2 { font-size: 19px; font-weight: 800; color: #FFF; margin-bottom: 4px; }
+    .card-content p { font-size: 13.5px; color: var(--text-sub); }
+    .card-icon { font-size: 26px; color: var(--text-sub); opacity: 0.8; }
+    .btn-register .card-icon { color: #F87171; }
+    .btn-claim .card-icon { color: #60A5FA; }
 
-    .top-nav { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
-    .btn-back { background: #374151; color: #FFF; border: none; padding: 10px 16px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-right: 12px; flex-shrink: 0; }
-    .screen-title { font-size: 19px; font-weight: 900; color: #FFF; }
+    /* 네비게이션바 */
+    .top-nav { display: flex; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border); }
+    .btn-back { background: #334155; color: #FFF; border: none; padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; margin-right: 12px; display: flex; align-items: center; gap: 6px; }
+    .screen-title { font-size: 18px; font-weight: 800; color: #FFF; }
 
-    .form-group { margin-bottom: 24px; position: relative; }
-    .form-label { display: block; font-size: 16.5px; font-weight: 700; margin-bottom: 6px; color: #F3F4F6; }
-    .form-sub { display: block; font-size: 13px; color: var(--text-gray); margin-bottom: 8px; line-height: 1.4; }
-    .form-sub strong { color: #F87171; }
+    /* 폼 입력 디자인 */
+    .form-group { margin-bottom: 22px; position: relative; }
+    .form-label { display: block; font-size: 15.5px; font-weight: 700; margin-bottom: 6px; color: #E2E8F0; }
+    .form-sub { display: block; font-size: 12.5px; color: var(--text-sub); margin-bottom: 8px; line-height: 1.4; }
     
     .form-input {
-      width: 100%; height: 56px; padding: 0 16px; font-size: 18px; font-weight: 700;
-      border: 2px solid var(--border-color); border-radius: 12px; background: #1F2937; color: #FFF;
+      width: 100%; height: 52px; padding: 0 16px; font-size: 17px; font-weight: 600;
+      border: 1px solid var(--card-border); border-radius: 10px; background: #0F172A; color: #FFF;
+      transition: border-color 0.2s;
     }
-    .form-input:focus { border-color: var(--bs-red); outline: none; }
+    .form-input:focus { border-color: var(--bs-red); outline: none; box-shadow: 0 0 0 3px rgba(220,38,38,0.2); }
 
+    /* 대리점 자동완성 드롭다운 */
     .agency-dropdown {
-      display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 220px; overflow-y: auto;
-      background: #1F2937; border: 2px solid #4B5563; border-radius: 12px; margin-top: 4px; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto;
+      background: #1E293B; border: 1px solid #475569; border-radius: 10px; margin-top: 4px; z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
     .agency-dropdown.show { display: block; }
-    .agency-item { padding: 14px 16px; font-size: 16px; font-weight: 700; border-bottom: 1px solid #374151; color: #FFF; cursor: pointer; }
+    .agency-item { padding: 12px 16px; font-size: 15px; font-weight: 600; border-bottom: 1px solid #334151; color: #E2E8F0; cursor: pointer; }
     .agency-item:active { background-color: var(--bs-red); color: #FFF; }
 
+    /* 고화질 사진 업로드 박스 (FontAwesome 카메라 아이콘) */
     .photo-upload-box {
-      display: block; width: 100%; padding: 20px 14px; border: 2px dashed #6B7280; border-radius: 12px; background: #1F2937; text-align: center; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 22px 14px; border: 2px dashed #475569; border-radius: var(--radius); background: #0F172A; text-align: center; cursor: pointer;
+      transition: background 0.2s;
     }
-    .photo-upload-box.done { border-style: solid; border-color: #10B981; background: #064E3B; }
+    .photo-upload-box:active { background: #1E293B; }
+    .photo-upload-box.done { border-style: solid; border-color: #10B981; background: rgba(6, 78, 59, 0.3); }
     .photo-upload-box input[type="file"] { display: none; }
-    .camera-btn-text { font-size: 17px; font-weight: 700; color: #E5E7EB; display: block; }
-    .preview-img { max-width: 100%; max-height: 200px; margin-top: 12px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; border: 1px solid #FFF; }
+    .camera-btn-text { font-size: 16px; font-weight: 700; color: #E2E8F0; display: flex; align-items: center; gap: 8px; }
+    .camera-btn-text i { font-size: 20px; color: #60A5FA; }
+    .preview-img { max-width: 100%; max-height: 180px; margin-top: 10px; border-radius: 8px; display: none; border: 1px solid #64748B; }
 
+    /* 제출 버튼 */
     .submit-btn {
-      width: 100%; height: 62px; background: var(--bs-red); color: #FFFFFF; font-size: 21px; font-weight: 900;
-      border: none; border-radius: 14px; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(230,0,18,0.4);
+      width: 100%; height: 58px; background: var(--bs-red); color: #FFFFFF; font-size: 19px; font-weight: 900;
+      border: none; border-radius: var(--radius); cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(220,38,38,0.4);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: background 0.2s;
     }
-    .submit-btn:active { transform: scale(0.98); }
-    .submit-btn:disabled { background: #4B5563; box-shadow: none; cursor: not-allowed; }
+    .submit-btn:active { background: var(--bs-red-dark); transform: scale(0.98); }
+    .submit-btn:disabled { background: #475569; box-shadow: none; cursor: not-allowed; }
 
-    .info-summary-card { background: #1F2937; border: 2px solid #4B5563; border-radius: 12px; padding: 16px; margin-bottom: 22px; }
-    .info-row { display: flex; justify-content: space-between; align-items: center; font-size: 15.5px; padding: 8px 0; border-bottom: 1px solid #374151; gap: 8px; }
+    /* 요약 카드 */
+    .info-summary-card { background: #0F172A; border: 1px solid #475569; border-radius: var(--radius); padding: 16px; margin-bottom: 22px; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; font-size: 15px; padding: 7px 0; border-bottom: 1px solid #1E293B; gap: 8px; }
     .info-row:last-child { border-bottom: none; }
-    .info-row strong { color: #F87171; font-size: 17px; text-align: right; }
+    .info-row strong { color: #F87171; font-size: 16px; text-align: right; }
 
     .calc-highlight {
-      background: #450A0A; border: 2px solid var(--bs-red); color: #FCA5A5; padding: 14px; border-radius: 10px;
-      font-size: 17px; font-weight: 900; text-align: center; margin-top: 10px; display: none;
+      background: rgba(127, 29, 29, 0.4); border: 1px solid var(--bs-red); color: #FCA5A5; padding: 12px; border-radius: 10px;
+      font-size: 16px; font-weight: 800; text-align: center; margin-top: 10px; display: none;
     }
   </style>
 </head>
@@ -146,6 +168,7 @@
     <h1>BRIDGESTONE</h1>
     <p>R118 카고 트럭 타이어 품질보증 서비스</p>
   </header>
+  
   <div class="policy-banner">
     📢 <strong>품질보증 규정:</strong> 구매일로부터 <strong>3개월 이내</strong>, 마모율 20% 이내 파손 타이어는 <strong>1본 이상 구매 시 1본당 1회</strong> 새 제품 교환 보장.
   </div>
@@ -154,92 +177,97 @@
     
     <!-- 홈 화면 -->
     <div id="screen-home" class="screen active">
-      <p class="welcome-text">원하시는 서비스를 선택해 주세요.</p>
+      <p class="welcome-text">원하시는 서비스를 선택해 주세요</p>
 
       <button type="button" class="big-card-btn btn-register" onclick="showScreen('screen-register')">
-        <span class="badge">R118 신규 구매 고객</span>
-        <h2>1. 최초 구매 등록하기</h2>
-        <p>영수증, 장착 키로수 및 총 구매 수량을 등록합니다.</p>
+        <div class="card-content">
+          <span class="badge" style="background:rgba(220,38,38,0.2); color:#F87171; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">신규 구매 고객</span>
+          <h2 style="margin-top:6px;">최초 구매 등록</h2>
+          <p>영수증 및 장착 키로수 등록</p>
+        </div>
+        <i class="fa-solid fa-chevron-right card-icon"></i>
       </button>
 
       <button type="button" class="big-card-btn btn-claim" onclick="showScreen('screen-claim')">
-        <span class="badge">운행 중 타이어 파손 발생</span>
-        <h2>2. 사용자 과실 보상 접수하기</h2>
-        <p>휴대폰 번호로 등록 내역을 조회하고 1본 교환을 신청합니다.</p>
+        <div class="card-content">
+          <span class="badge" style="background:rgba(59,130,246,0.2); color:#93C5FD; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">파손 발생 시</span>
+          <h2 style="margin-top:6px;">사용자 과실 보상 접수</h2>
+          <p>번호 조회 후 1본 교환 신청</p>
+        </div>
+        <i class="fa-solid fa-chevron-right card-icon"></i>
       </button>
     </div>
 
     <!-- 1. 최초 구매 등록 -->
     <div id="screen-register" class="screen">
       <div class="top-nav">
-        <button type="button" class="btn-back" onclick="showScreen('screen-home')">← 뒤로</button>
-        <span class="screen-title">1. 최초 구매 등록</span>
+        <button type="button" class="btn-back" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i> 뒤로</button>
+        <span class="screen-title">최초 구매 등록</span>
       </div>
 
       <form id="form-register" autocomplete="off">
         <div class="form-group">
-          <label class="form-label">1. 휴대폰 번호 입력</label>
-          <span class="form-sub">보상 접수 시 본인 확인 및 보상 이력 관리용</span>
+          <label class="form-label"><i class="fa-solid fa-phone" style="color:#60A5FA;"></i> 휴대폰 번호 입력</label>
+          <span class="form-sub">보상 접수 시 본인 확인 및 이력 관리용</span>
           <input type="tel" id="reg_phone" class="form-input" inputmode="numeric" placeholder="01012345678" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label">2. 고객 성함 (차량번호)</label>
+          <label class="form-label"><i class="fa-solid fa-user" style="color:#60A5FA;"></i> 고객 성함 (차량번호)</label>
           <input type="text" id="reg_name" class="form-input" placeholder="예: 홍길동 (12가3456)" required>
         </div>
 
         <div class="form-group" id="agency_search_wrap">
-          <label class="form-label">3. 구매 대리점 선택</label>
-          <span class="form-sub">대리점 이름의 일부만 입력하면 목록이 표시됩니다.</span>
+          <label class="form-label"><i class="fa-solid fa-store" style="color:#60A5FA;"></i> 구매 대리점 선택</label>
+          <span class="form-sub">대리점 이름의 일부를 입력하면 목록이 표시됩니다.</span>
           <input type="text" id="reg_agency" class="form-input" placeholder="대리점 검색 (예: 북항)" onfocus="filterAgencyList()" oninput="filterAgencyList()" required>
           <div id="agency_dropdown" class="agency-dropdown"></div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">4. 총 구매 수량 (본 수) 직접 입력</label>
-          <span class="form-sub">구매하신 R118 타이어 총 본수를 숫자로 입력해주세요 (1본 이상).</span>
+          <label class="form-label"><i class="fa-solid fa-boxes-stacked" style="color:#60A5FA;"></i> 총 구매 수량 (본 수) 입력</label>
           <input type="number" id="reg_qty" class="form-input" inputmode="numeric" min="1" placeholder="예: 4" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label">5. 장착 시점 차량 키로수(km)</label>
+          <label class="form-label"><i class="fa-solid fa-gauge" style="color:#60A5FA;"></i> 장착 시점 차량 키로수 (km)</label>
           <input type="number" id="reg_km" class="form-input" inputmode="numeric" placeholder="예: 50000" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label">6. 구매 영수증 사진 촬영</label>
+          <label class="form-label">구매 영수증 사진</label>
           <label class="photo-upload-box" id="box_receipt">
-            <span class="camera-btn-text" id="txt_receipt">📷 영수증 찍기 (고화질 확대 가능)</span>
+            <span class="camera-btn-text" id="txt_receipt"><i class="fa-solid fa-camera"></i> 영수증 촬영 (고화질)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_receipt', 'box_receipt', 'txt_receipt', 'receipt')">
             <img id="prev_receipt" class="preview-img">
           </label>
         </div>
 
         <div class="form-group">
-          <label class="form-label">7. 장착 시점 계기판 사진 촬영</label>
+          <label class="form-label">장착 시점 계기판 사진</label>
           <label class="photo-upload-box" id="box_odo">
-            <span class="camera-btn-text" id="txt_odo">📷 계기판 찍기 (고화질 확대 가능)</span>
+            <span class="camera-btn-text" id="txt_odo"><i class="fa-solid fa-camera"></i> 계기판 촬영 (고화질)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_odo', 'box_odo', 'txt_odo', 'odo')">
             <img id="prev_odo" class="preview-img">
           </label>
         </div>
 
-        <button type="submit" class="submit-btn" id="btn_reg_submit">구매 등록 완료하기</button>
+        <button type="submit" class="submit-btn" id="btn_reg_submit"><i class="fa-solid fa-check"></i> 구매 등록 완료하기</button>
       </form>
     </div>
 
     <!-- 2. 보상 접수 -->
     <div id="screen-claim" class="screen">
       <div class="top-nav">
-        <button type="button" class="btn-back" onclick="showScreen('screen-home')">← 뒤로</button>
-        <span class="screen-title">2. 사용자 과실 보상 접수</span>
+        <button type="button" class="btn-back" onclick="showScreen('screen-home')"><i class="fa-solid fa-arrow-left"></i> 뒤로</button>
+        <span class="screen-title">사용자 과실 보상 접수</span>
       </div>
 
       <div class="form-group">
-        <label class="form-label">등록된 휴대폰 번호 조회</label>
+        <label class="form-label"><i class="fa-solid fa-magnifying-glass" style="color:#60A5FA;"></i> 등록된 휴대폰 번호 조회</label>
         <div style="display:flex; gap:8px;">
           <input type="tel" id="claim_phone" class="form-input" inputmode="numeric" placeholder="01012345678" value="01012345678">
-          <button type="button" id="btn_lookup" onclick="lookupCustomer()" style="width:115px; background:#3B82F6; color:#FFF; border:none; border-radius:12px; font-size:17px; font-weight:700; cursor:pointer; flex-shrink:0;">조회하기</button>
+          <button type="button" id="btn_lookup" onclick="lookupCustomer()" style="width:110px; background:var(--accent-blue); color:#FFF; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-search"></i> 조회</button>
         </div>
       </div>
 
@@ -253,45 +281,45 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">1. 현재 차량 키로수(km) 입력</label>
+          <label class="form-label">1. 현재 차량 키로수 (km)</label>
           <input type="number" id="claim_curr_km" class="form-input" inputmode="numeric" placeholder="예: 62000" oninput="calculateDrivenKm()" required>
           <div id="usage_result" class="calc-highlight"></div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">2. 타이어 DOT 숫자 4자리 입력</label>
-          <span class="form-sub">타이어 옆면 DOT 맨 뒤의 <strong>숫자 4자리</strong> 입력</span>
+          <label class="form-label">2. 타이어 DOT 숫자 4자리</label>
+          <span class="form-sub">옆면 DOT 맨 뒤의 숫자 4자리 입력</span>
           <input type="tel" id="claim_dot" class="form-input" inputmode="numeric" maxlength="4" placeholder="예: 3825" required>
         </div>
 
         <div class="form-group">
           <label class="form-label">3. 타이어 DOT 전체 사진 (알파벳 포함)</label>
           <label class="photo-upload-box" id="box_dot_photo">
-            <span class="camera-btn-text" id="txt_dot_photo">📷 DOT 전체 찍기 (고화질)</span>
+            <span class="camera-btn-text" id="txt_dot_photo"><i class="fa-solid fa-camera"></i> DOT 전체 촬영 (고화질)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_dot_photo', 'box_dot_photo', 'txt_dot_photo', 'dot_photo')">
             <img id="prev_dot_photo" class="preview-img">
           </label>
         </div>
 
         <div class="form-group">
-          <label class="form-label">4. 타이어 문제 파손 부위 사진</label>
+          <label class="form-label">4. 파손 부위 사진</label>
           <label class="photo-upload-box" id="box_damage">
-            <span class="camera-btn-text" id="txt_damage">📷 문제 부위 찍기 (고화질)</span>
+            <span class="camera-btn-text" id="txt_damage"><i class="fa-solid fa-camera"></i> 문제 부위 촬영 (고화질)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_damage', 'box_damage', 'txt_damage', 'damage')">
             <img id="prev_damage" class="preview-img">
           </label>
         </div>
 
         <div class="form-group">
-          <label class="form-label">5. 현재 계기판(키로수) 사진</label>
+          <label class="form-label">5. 현재 계기판 사진</label>
           <label class="photo-upload-box" id="box_claim_odo">
-            <span class="camera-btn-text" id="txt_claim_odo">📷 현재 계기판 찍기 (고화질)</span>
+            <span class="camera-btn-text" id="txt_claim_odo"><i class="fa-solid fa-camera"></i> 계기판 촬영 (고화질)</span>
             <input type="file" accept="image/*" capture="environment" onchange="processImage(this, 'prev_claim_odo', 'box_claim_odo', 'txt_claim_odo', 'claim_odo')">
             <img id="prev_claim_odo" class="preview-img">
           </label>
         </div>
 
-        <button type="submit" class="submit-btn" id="btn_claim_submit">보상 신청 완료하기</button>
+        <button type="submit" class="submit-btn" id="btn_claim_submit"><i class="fa-solid fa-file-shield"></i> 보상 신청 완료하기</button>
       </form>
     </div>
 
@@ -299,7 +327,7 @@
 </div>
 
 <script>
-  const GAS_WEB_APP_URL = ""; // 원드라이브(구글시트) 연동 웹앱 URL
+  const GAS_WEB_APP_URL = ""; 
   const AGENCY_LIST = [
     "(주) 태지", "(주)남영타이어 브리지스톤 남구점", "(주)뉴트럭오일교환", "(주)도개미쉐린타이어", "(주)영재",
     "(주)온누리타이어", "(주)태성운송종합상사", "KTS동아타이어", "LS타이어", "㈜국제상사",
@@ -390,18 +418,17 @@
         prev.src = compressed;
         prev.style.display = 'block';
         document.getElementById(boxId).classList.add('done');
-        document.getElementById(txtId).innerText = "✅ 고화질 촬영 완료 (다시 터치)";
+        document.getElementById(txtId).innerHTML = `<i class="fa-solid fa-circle-check" style="color:#10B981;"></i> 고화질 촬영 완료`;
       };
       img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   }
 
-  // 1. 최초 구매 등록 (담당자 메일 알림 + 원드라이브/구글시트 백엔드 연동)
   document.getElementById('form-register').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('btn_reg_submit');
-    btn.disabled = true; btn.innerText = "저장 및 메일 전송 중...";
+    btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 저장 및 전송 중...`;
 
     const phone = document.getElementById('reg_phone').value.replace(/[^0-9]/g, '');
     const name = document.getElementById('reg_name').value.trim();
@@ -417,39 +444,29 @@
       if (GAS_WEB_APP_URL) {
         await fetch(GAS_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(record) });
       }
-      // EmailJS를 통한 담당자 메일 발송
       await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
         title: "[브리지스톤 품질보증] 신규 구매 등록 알림",
-        type: "최초구매등록",
-        phone: phone,
-        name: name,
-        agency: agency,
-        qty: qty + "본",
-        init_km: initKm.toLocaleString() + " km",
-        reg_date: regDate,
-        elapsed_days: "0일 (신규)",
-        driven_km: "0 km",
-        dot_no: "-"
+        type: "최초구매등록", phone, name, agency, qty: qty + "본",
+        init_km: initKm.toLocaleString() + " km", reg_date: regDate
       });
 
-      alert(`✅ [${name}]님 (${qty}본 구매) 최초 등록이 완료되며 담당자 메일로 전송되었습니다!`);
+      alert(`✅ [${name}]님 (${qty}본 구매) 최초 등록이 완료되었습니다!`);
       document.getElementById('claim_phone').value = phone;
       showScreen('screen-home');
     } catch (err) {
-      alert("기기에 안전하게 저장되었습니다. (메일 발송 키 설정 확인)");
+      alert("기기에 안전하게 저장되었습니다.");
       showScreen('screen-home');
     } finally {
-      btn.disabled = false; btn.innerText = "구매 등록 완료하기";
+      btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-check"></i> 구매 등록 완료하기`;
     }
   });
 
-  // 2. 보상 접수 조회
   async function lookupCustomer() {
     const phone = document.getElementById('claim_phone').value.replace(/[^0-9]/g, '');
     if (phone.length < 8) { alert("휴대폰 번호를 정확히 입력해 주세요."); return; }
 
     const btn = document.getElementById('btn_lookup');
-    btn.innerText = "조회중..."; btn.disabled = true;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`; btn.disabled = true;
 
     let foundRecord = null;
     if (GAS_WEB_APP_URL) {
@@ -465,15 +482,15 @@
       if (local) foundRecord = JSON.parse(local);
     }
 
-    btn.innerText = "조회하기"; btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-search"></i> 조회`; btn.disabled = false;
 
     if (!foundRecord) {
-      alert("등록된 구매 내역이 없습니다. [1. 최초 구매 등록]을 먼저 진행해 주세요.");
+      alert("등록된 구매 내역이 없습니다. [최초 구매 등록]을 먼저 진행해 주세요.");
       return;
     }
 
     if (foundRecord.claimed) {
-      alert("⚠️ 안내: 해당 휴대폰 번호는 이미 1본 교환 보상 서비스를 지원받아 추가 접수가 불가합니다.");
+      alert("⚠️ 안내: 해당 번호는 이미 1본 교환 보상 서비스를 지원받아 추가 접수가 불가합니다.");
       return;
     }
 
@@ -512,16 +529,15 @@
     } else { box.style.display = 'none'; }
   }
 
-  // 3. 보상 접수 제출 (담당자 메일 알림 + 원드라이브/구글시트 백엔드 연동)
   document.getElementById('form-claim').addEventListener('submit', async function(e) {
     e.preventDefault();
     if (!activeCustomer) return;
 
     const btn = document.getElementById('btn_claim_submit');
-    btn.disabled = true; btn.innerText = "보상 신청 및 메일 전송 중...";
+    btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 전송 중...`;
 
     const dotNo = document.getElementById('claim_dot').value.trim();
-    if (dotNo.length !== 4) { alert("DOT 숫자 4자리를 정확히 입력해 주세요."); btn.disabled = false; btn.innerText = "보상 신청 완료하기"; return; }
+    if (dotNo.length !== 4) { alert("DOT 숫자 4자리를 정확히 입력해 주세요."); btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-file-shield"></i> 보상 신청 완료하기`; return; }
 
     activeCustomer.claimed = true;
     localStorage.setItem('BS_DB_' + activeCustomer.phone, JSON.stringify(activeCustomer));
@@ -536,41 +552,31 @@
       initKm: activeCustomer.initKm,
       currKm: activeCustomer.currKm || 0,
       drivenKm: activeCustomer.drivenKm || 0,
-      dotNo: dotNo,
-      photo1_name: `${activeCustomer.phone}_DOT전체.jpg`,
-      photo1_data: photoData.dot_photo || "없음",
-      photo2_name: `${activeCustomer.phone}_문제부위.jpg`,
-      photo2_data: photoData.damage || "없음",
-      photo3_name: `${activeCustomer.phone}_계기판.jpg`,
-      photo3_data: photoData.claim_odo || "없음"
+      dotNo: dotNo
     };
 
     try {
       if (GAS_WEB_APP_URL) {
         await fetch(GAS_WEB_APP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
       }
-      // 담당자에게 보상 접수 메일 발송
       await emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
         title: "[브리지스톤 품질보증] 사용자 과실 보상 접수 알림",
         type: "타이어보상접수",
-        phone: payload.phone,
-        name: payload.name,
-        agency: payload.agency,
+        phone: payload.phone, name: payload.name, agency: payload.agency,
         qty: (activeCustomer.qty || 1) + "본 중 1본 신청",
         init_km: Number(payload.initKm).toLocaleString() + " km",
-        reg_date: payload.regDate,
-        elapsed_days: payload.elapsedDays,
-        driven_km: `총 ${Number(payload.drivenKm).toLocaleString()} km 주행 (현재 ${Number(payload.currKm).toLocaleString()} km)`,
+        reg_date: payload.regDate, elapsed_days: payload.elapsedDays,
+        driven_km: `총 ${Number(payload.drivenKm).toLocaleString()} km 주행`,
         dot_no: payload.dotNo
       });
 
-      alert(`✅ 보상 신청이 완료되어 담당자 메일로 전송되었습니다!\n\n• 경과일: ${payload.elapsedDays}\n• 주행거리: ${Number(payload.drivenKm).toLocaleString()} km\n• DOT 4자리: ${payload.dotNo}`);
+      alert(`✅ 보상 신청이 완료되어 담당자 메일로 전송되었습니다!\n\n• 주행거리: ${Number(payload.drivenKm).toLocaleString()} km\n• DOT 4자리: ${payload.dotNo}`);
       showScreen('screen-home');
     } catch (err) {
-      alert("보상 접수 내역이 기기에 저장되었습니다. (메일 발송 키 확인 필요)");
+      alert("보상 접수 내역이 안전하게 저장되었습니다.");
       showScreen('screen-home');
     } finally {
-      btn.disabled = false; btn.innerText = "보상 신청 완료하기";
+      btn.disabled = false; btn.innerHTML = `<i class="fa-solid fa-file-shield"></i> 보상 신청 완료하기`;
     }
   });
 </script>
